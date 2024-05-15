@@ -1,0 +1,64 @@
+#  MainScreen
+
+MainScreen {
+    height: 100%;
+}
+
+# Rooms
+
+RoomsContainer {
+    width: 20%;
+    height: 100%;
+}
+
+RadioSet {
+    height: 100%;
+    width: 100%;
+}
+
+RadioButton {
+    height: 2;
+    width: 100%;
+}
+
+# Messages
+
+.message-container {
+    width: 80%;
+    min-height: 85%;
+    max-height: 89%;
+    margin-top: 1;
+}
+
+.message-content {
+    min-height: 2;
+    height: auto;
+    width: 100%;
+    background: #333;
+    content-align: left middle;
+    margin: 1;
+    # padding-bottom: 1;
+    padding-right: 2;
+    border: heavy #444;
+}
+
+.message-content .sender {
+    text-style: bold;
+}     
+
+.message-content .message-body {
+    margin-left: 2;
+    width: 100%;
+}     
+
+# MessagesContainer MessageContent Label {
+#     text-style: "underline";
+# }
+
+.message-box {
+    height: 3;
+    width: 80%;
+    background: #333;
+    margin-top: 1;
+    margin-bottom: 1;
+}

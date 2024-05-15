@@ -1,0 +1,18 @@
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nitrix"
+version = "0.1.0"
+description = "A Textual-based TUI application for Matrix."
+authors = [{name="Thomas Ryan", email="contact@thomasryan.ca"}]
+requires-python = ">=3.11"
+dependencies = [
+    "textual", 
+    "matrix-nio",
+    ]
+
+[project.scripts]
+nitrix = "nitrix.__main__:main"

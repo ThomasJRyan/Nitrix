@@ -1,0 +1,23 @@
+LoginScreen {
+    align: center middle;
+}
+
+LoginForm {
+    height: 100%;
+    width: 40;
+    align: center middle;
+}
+
+LoginForm Button {
+    width: 100%;
+    margin-bottom: 1;
+}
+
+LoginForm Input {
+    width: 100%;
+    margin-bottom: 1;
+}
+
+.success {
+    background: green;
+}
