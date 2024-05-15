@@ -1,0 +1,2 @@
+include src/nitrix/screens/login/*.tcss
+include src/nitrix/screens/main/*.tcss
