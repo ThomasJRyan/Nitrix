@@ -2,6 +2,7 @@
 
 MainScreen {
     height: 100%;
+    background: $background;
 }
 
 # Rooms
@@ -34,16 +35,17 @@ RadioButton {
     min-height: 2;
     height: auto;
     width: 100%;
-    background: #333;
+    background: $surface;
     content-align: left middle;
     margin: 1;
     # padding-bottom: 1;
     padding-right: 2;
-    border: heavy #444;
+    border: heavy $primary-background;
 }
 
 .message-content .sender {
     text-style: bold;
+    color: $primary;
 }     
 
 .message-content .message-body {
@@ -58,7 +60,7 @@ RadioButton {
 .message-box {
     height: 3;
     width: 80%;
-    background: #333;
+    background: $primary-background;
     margin-top: 1;
     margin-bottom: 1;
 }

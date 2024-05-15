@@ -36,4 +36,4 @@ class NitrixConfig():
         return self.config[section]
         
     def get_config(self, section: str, key: str):
-        return self.config.get(section, key, fallback=dict())
+        return self.config.get(section, key, fallback=None)
