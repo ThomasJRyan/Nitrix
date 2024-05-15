@@ -2,18 +2,25 @@ LoginScreen {
     align: center middle;
 }
 
+Vertical {
+    height: auto;
+}
+
+
 LoginForm {
-    height: 100%;
+    height: 15;
     width: 40;
-    align: center middle;
 }
 
 LoginForm Button {
-    width: 100%;
-    margin-bottom: 1;
+    width: 48%;
 }
 
-LoginForm Input {
+LoginForm Checkbox {
+    width: 50%;
+}
+
+Input {
     width: 100%;
     margin-bottom: 1;
 }
