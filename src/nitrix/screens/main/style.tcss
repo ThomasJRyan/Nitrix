@@ -64,3 +64,7 @@ RadioButton {
     margin-top: 1;
     margin-bottom: 1;
 }
+
+.room-highlighted {
+    color: $secondary;
+}
