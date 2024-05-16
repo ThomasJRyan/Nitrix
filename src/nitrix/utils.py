@@ -39,7 +39,9 @@ class NitrixConfig():
         return self.config.get(section, key, fallback=None)
     
     
-def clean_room_id(room_id: str ):
+def clean_room_id(room_id: str):
+        if not room_id:
+            return room_id
         room_id = room_id.replace("!", "_")
         room_id = room_id.replace(":", "_")
         room_id = room_id.replace(".", "_")

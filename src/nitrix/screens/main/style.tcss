@@ -31,6 +31,10 @@ RadioButton {
     margin-top: 1;
 }
 
+.message-vertical {
+    
+}   
+
 .message-content {
     min-height: 2;
     height: auto;
@@ -53,10 +57,6 @@ RadioButton {
     width: 100%;
 }     
 
-# MessagesContainer MessageContent Label {
-#     text-style: "underline";
-# }
-
 .message-box {
     height: 3;
     width: 80%;
@@ -67,4 +67,10 @@ RadioButton {
 
 .room-highlighted {
     color: $secondary;
+}
+
+.new-messages {
+    color: $secondary;
+    border-bottom: heavy $secondary;
+    width: 100%;
 }

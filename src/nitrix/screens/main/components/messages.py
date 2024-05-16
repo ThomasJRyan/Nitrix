@@ -4,6 +4,7 @@ from textual.containers import VerticalScroll, Vertical, Horizontal
 from textual.reactive import reactive
 from textual.widgets import Label, Static, ContentSwitcher
 from textual.css.query import NoMatches
+from textual._node_list import DuplicateIds
 
 from nio import RoomMessageText, MatrixRoom
 
@@ -28,6 +29,7 @@ class MessagesContainer(ContentSwitcher):
     async def on_mount(self):
         for room_id in self.app.client.rooms.keys():
             self.run_worker(self.get_initial_messages(room_id))
+            
         
     async def get_initial_messages(self, room_id: str):
         messages = self.messages.setdefault(room_id, [])
@@ -35,6 +37,25 @@ class MessagesContainer(ContentSwitcher):
         for msg in res.chunk:
             messages.append(msg)
         messages.reverse()
+        
+    async def remove_new_messages_label(self):
+        vert_scroll = await self.get_room_vert()
+        try:
+            new_messages = vert_scroll.query_one("#new_messages")
+            await new_messages.remove()
+        except NoMatches:
+            ...
+        
+    async def get_room_vert(self):
+        vert_scroll_id = clean_room_id(self.app.current_room)
+        if not vert_scroll_id:
+            return None
+        try:
+            vert_scroll = self.get_child_by_id(vert_scroll_id)
+        except NoMatches:
+            vert_scroll = VerticalScroll(id=vert_scroll_id, classes="message-vertical")
+            self.mount(vert_scroll)
+        return vert_scroll
     
     async def update_displayed_messages(self, messages: list):
         """Update messages when displayed_messages is updated
@@ -42,15 +63,21 @@ class MessagesContainer(ContentSwitcher):
         Args:
             messages (list[RoomMessageText]): Messages
         """
-        vert_scroll_id = clean_room_id(self.app.current_room)
-        try:
-            vert_scroll = self.get_child_by_id(vert_scroll_id)
-        except NoMatches:
-            vert_scroll = VerticalScroll(id=vert_scroll_id)
-            self.mount(vert_scroll)
+        vert_scroll = await self.get_room_vert()
+        if not vert_scroll:
+            return
             
-        for message in messages:
-            event_ids = [child.event_id for child in vert_scroll.children if hasattr(child, "event_id")]
+        event_ids = [child.event_id for child in vert_scroll.children if hasattr(child, "event_id")]
+        for message in messages.copy():
+            if message is NewMessagesStart:
+                try:
+                    vert_scroll.query_one("#new_messages")
+                except NoMatches:
+                    vert_scroll.mount(
+                        Label("NEW MESSAGES", id="new_messages", classes="new-messages"))
+                finally:
+                    del messages[messages.index(NewMessagesStart)]
+                continue
             if message.event_id not in event_ids and hasattr(message, "body"):
                 message_content = MessageContent(message, classes="message-content")
                 message_content.event_id = message.event_id
@@ -67,12 +94,20 @@ class MessagesContainer(ContentSwitcher):
             message (RoomMessageText): Room message text object to add
         """
         messages = self.messages.setdefault(room.room_id, [])
+        
+        vert_scroll: VerticalScroll = await self.get_room_vert()
+        if not vert_scroll:
+            return
+        
+        if not vert_scroll.has_focus and NewMessagesStart not in messages:
+            messages.append(NewMessagesStart)
+        
         messages.append(message)
+        
         if room.room_id == self.app.current_room:
             await self.update_displayed_messages(messages)
             return
         
-        # messages.append(NewMessagesStart)
         room_container = self.app.query_one("RoomsContainer")
         await room_container.highlight_room(room.room_id)
         
@@ -82,6 +117,7 @@ class MessagesContainer(ContentSwitcher):
         Args:
             room_id (str): Room ID to change to
         """
+        await self.remove_new_messages_label()
         messages = self.messages.setdefault(room_id, [])
         await self.update_displayed_messages(messages)
         vert_scroll_id = clean_room_id(self.app.current_room)
