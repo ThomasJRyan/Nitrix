@@ -32,7 +32,7 @@ RadioButton {
 }
 
 .message-vertical {
-    
+
 }   
 
 .message-content {
@@ -54,6 +54,10 @@ RadioButton {
 
 .message-content .message-body {
     margin-left: 2;
+    width: 100%;
+}     
+
+.message-content .message-body Label {
     width: 100%;
 }     
 
