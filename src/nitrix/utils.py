@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import hashlib
 import platform
 import configparser
 
@@ -46,3 +47,9 @@ def clean_room_id(room_id: str):
         room_id = room_id.replace(":", "_")
         room_id = room_id.replace(".", "_")
         return room_id
+    
+def get_user_id_colour(user_id: str):
+    MIN, MAX = 1, 6
+    hashed = hashlib.md5(user_id.encode()).hexdigest()
+    numerical = int(''.join([i for i in hashed if i.isdigit()]))
+    return (numerical % MAX) + MIN

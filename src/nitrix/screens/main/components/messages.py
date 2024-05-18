@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import typing
+import datetime
 
 from textual.containers import VerticalScroll, Vertical, Horizontal
 from textual.reactive import reactive
@@ -9,7 +10,7 @@ from textual.css.query import NoMatches
 
 from nio import RoomMessageText, MatrixRoom
 
-from nitrix.utils import clean_room_id
+from nitrix.utils import clean_room_id, get_user_id_colour
 
 class NewMessagesStart():
     ...
@@ -21,7 +22,23 @@ class MessageContent(Vertical):
         self.sender = message.sender[1:].split(":")[0]
         self.messages = []
         super().__init__(*args, **kwargs)
-        self.mount(Label(self.sender, classes="sender"))
+        
+        sender_horizonal = Horizontal(classes="sender-container")
+        
+        usercolour = f"username-colour-{get_user_id_colour(self.sender_id)}"
+        sender_name = Label(self.sender, classes=f"sender {usercolour}")
+        
+        message_time = message.server_timestamp / 1000
+        message_time = datetime.datetime.fromtimestamp(message_time)
+        self.message_time = message_time
+        message_time = message_time.strftime("%a %d, %I:%M%p")
+        sender_time = Label(message_time, classes=f"time")
+        
+        sender_horizonal.mount(sender_name)
+        sender_horizonal.mount(sender_time)
+        
+        self.mount(sender_horizonal)
+        
         self.mount(Vertical(id="messages", classes="message-body"))
         self.add_message(message)
         
@@ -134,7 +151,9 @@ class MessagesContainer(ContentSwitcher):
                         last_message: MessageContent = child
                         break
                     
-                if last_message and last_message.sender_id == message.sender:
+                message_time = message.server_timestamp / 1000
+                message_time = datetime.datetime.fromtimestamp(message_time)
+                if last_message and last_message.sender_id == message.sender and (message_time - last_message.message_time).seconds <= 300:
                     last_message.add_message(message)
                 else:
                     message_content = MessageContent(message, classes="message-content")

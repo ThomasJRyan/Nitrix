@@ -1,4 +1,13 @@
-#  MainScreen
+# Variables
+
+$username-1: #ff6600;
+$username-2: #ff0000;
+$username-3: #cc00ff;
+$username-4: #3366ff;
+$username-5: #00cc00;
+$username-6: #ffff00;
+
+# MainScreen
 
 MainScreen {
     height: 100%;
@@ -47,9 +56,23 @@ RadioButton {
     border: heavy $primary-background;
 }
 
-.message-content .sender {
+.message-content .sender-container {
+    height: 1;
+    width: 100%;
+    
+    layout: grid;
+    grid-size: 2 1
+}
+
+.time {
+    text-style: italic;
+    color: $secondary-background;
+    content-align: right middle;
+    width: 100%;
+}
+
+.sender {
     text-style: bold;
-    color: $primary;
 }     
 
 .message-content .message-body {
@@ -77,4 +100,28 @@ RadioButton {
     color: $secondary;
     border-bottom: heavy $secondary;
     width: 100%;
+}
+
+.username-colour-1 {
+    color: $username-1;
+}
+
+.username-colour-2 {
+    color: $username-2;
+}
+
+.username-colour-3 {
+    color: $username-3;
+}
+
+.username-colour-4 {
+    color: $username-4;
+}
+
+.username-colour-5 {
+    color: $username-5;
+}
+
+.username-colour-6 {
+    color: $username-6;
 }
