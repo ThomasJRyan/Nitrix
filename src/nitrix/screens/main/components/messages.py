@@ -25,28 +25,39 @@ class MessageContent(Vertical):
         
         sender_horizonal = Horizontal(classes="sender-container")
         
+        # Username
         usercolour = f"username-colour-{get_user_id_colour(self.sender_id)}"
         sender_name = Label(self.sender, classes=f"sender {usercolour}")
         
+        # Message sent time
         message_time = message.server_timestamp / 1000
         message_time = datetime.datetime.fromtimestamp(message_time)
         self.message_time = message_time
         message_time = message_time.strftime("%a %d, %I:%M%p")
         sender_time = Label(message_time, classes=f"time")
         
+        # Mount the username and message sent time to the horizontal
         sender_horizonal.mount(sender_name)
         sender_horizonal.mount(sender_time)
         
+        # Mount the horizontal
         self.mount(sender_horizonal)
         
+        # Mount the vertical and add the message
         self.mount(Vertical(id="messages", classes="message-body"))
         self.add_message(message)
         
     def add_message(self, message: RoomMessageText):
+        """Adds a message to the container
+
+        Args:
+            message (RoomMessageText): The message to add
+        """
         if message.sender != self.sender_id:
             return
         self.messages.append(message)
         message_vert = self.query_one("#messages")
+        body = getattr(message, "body", None) or "<ERROR: NO MESSAGE BODY>"
         message_vert.mount(Label(message.body))
         
     @property
@@ -139,9 +150,9 @@ class MessagesContainer(ContentSwitcher):
                     # We delete it so we're able to add a new one later
                     del messages[messages.index(NewMessagesStart)]
                 continue
+            
             # Add the message to the vertical scroll container
-            if message.event_id not in event_ids and hasattr(message, "body"):
-                
+            elif message.event_id not in event_ids:
                 # ! This whole section is so gross... I can do better
                 last_message = None
                 if vert_scroll.children:
