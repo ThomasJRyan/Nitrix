@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import pathlib
 import hashlib
 import platform
 import configparser
@@ -13,22 +14,34 @@ class NitrixConfig():
         self.config = configparser.ConfigParser()
 
         if platform.system() == 'Linux':
-            self.default_path = os.path.expanduser('~') + "/.nitrix"
-            if os.path.exists(self.default_path):
-                self.config.read(self.default_path)
+            self.config_folder = pathlib.Path(os.path.expanduser('~') + "/.nitrix/")
+            os.makedirs(self.config_folder, exist_ok=True)
+        elif platform.system() == 'Windows':
+            self.config_folder = pathlib.Path(os.getenv('LOCALAPPDATA') + "\\Nitrix\\")
+            os.makedirs(self.config_folder, exist_ok=True)
         else:
             raise NotImplementedError("Config not implemented for this OS")
+        
+        if os.path.exists(self.config_folder / 'config'):
+            self.config.read(self.config_folder / 'config')
     
     def add_config(self, section: str, key: str, value: Any):
+        """Add a configuration key/value to a section
+
+        Args:
+            section (str): Section header to add the configuration under
+            key (str): Key to associate with the value
+            value (Any): Value to store in the configuration
+        """
         section_data = self.get_section(section)
         section_data.update({key: value})
-        with open(self.default_path, 'w') as fil:
+        with open(self.config_folder / 'config', 'w') as fil:
             self.config.write(fil)
             
     def add_configs(self, section: str, data: list[str, Any]):
         section_data = self.get_section(section)
         section_data.update(data)
-        with open(self.default_path, 'w') as fil:
+        with open(self.config_folder / 'config', 'w') as fil:
             self.config.write(fil)
         
     def get_section(self, section: str):
