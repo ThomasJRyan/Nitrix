@@ -160,4 +160,4 @@ cython_debug/
 #.idea/
 
 # I just like testing things
-/test.py
+/test
