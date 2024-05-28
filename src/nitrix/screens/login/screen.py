@@ -11,6 +11,7 @@ from textual.containers import Container, Center, Horizontal, Vertical
 from nitrix.client import client_factory
 from nitrix.utils import NitrixConfig
 
+
 class LoginError(Exception):
     ...
 
@@ -30,6 +31,7 @@ class LoginScreen(Screen):
     
     def compose(self):
         yield LoginForm()
+
         
     def save_login(self, homeserver: str, username: str, password: str):
         """Saves the login to the config manager
@@ -61,6 +63,7 @@ class LoginScreen(Screen):
         return homeserver, username, password
     
     async def on_mount(self):
+
         homeserver, username, password = self.get_inputs()
         
         # Attempt to get the homeserver, username, and password saved
@@ -70,6 +73,8 @@ class LoginScreen(Screen):
         username.value = config.get_config("Credentials", "username") or ""
         password.value = config.get_config("Credentials", "password") or ""
         
+       
+
         # If we were able to get the login information, attempt to login
         if homeserver.value and username.value and password.value:
             await self.try_login()
@@ -77,10 +82,23 @@ class LoginScreen(Screen):
         
     async def on_button_pressed(self, event: Button.Pressed):
         # Attempt to login to the server
+
+        from nitrix.screens import PopupScreen #Has to be delayed or you run into circular import
+
         if event.button.id == "loginscreen_submit":
-            await self.try_login()
+
+            try:
+
+                await self.try_login()
+
+            except LoginError as e:
+     
+                self.app.push_screen(PopupScreen(message="Error: Could not login"))
+
         
     async def try_login(self):
+
+
         """Attempt to login to the Nitrix server
 
         Raises:
