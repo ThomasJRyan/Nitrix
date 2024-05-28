@@ -58,7 +58,7 @@ class MessageContent(Vertical):
         self.messages.append(message)
         message_vert = self.query_one("#messages")
         body = getattr(message, "body", None) or "<ERROR: NO MESSAGE BODY>"
-        message_vert.mount(Label(message.body))
+        message_vert.mount(Label(body))
         
     @property
     def event_ids(self):
