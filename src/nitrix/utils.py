@@ -15,13 +15,12 @@ class NitrixConfig():
 
         if platform.system() == 'Linux':
             self.config_folder = pathlib.Path(os.path.expanduser('~') + "/.nitrix/")
-            os.makedirs(self.config_folder, exist_ok=True)
         elif platform.system() == 'Windows':
             self.config_folder = pathlib.Path(os.getenv('LOCALAPPDATA') + "\\Nitrix\\")
-            os.makedirs(self.config_folder, exist_ok=True)
         else:
             raise NotImplementedError("Config not implemented for this OS")
         
+        os.makedirs(self.config_folder, exist_ok=True)
         if os.path.exists(self.config_folder / 'config'):
             self.config.read(self.config_folder / 'config')
     
@@ -38,7 +37,13 @@ class NitrixConfig():
         with open(self.config_folder / 'config', 'w') as fil:
             self.config.write(fil)
             
-    def add_configs(self, section: str, data: list[str, Any]):
+    def add_configs(self, section: str, data: dict[str, Any]):
+        """Add multiple configurations to a section at once
+
+        Args:
+            section (str): Section header to add the configuration under
+            data (dict[str, Any]): A dictionary of configurations to add
+        """
         section_data = self.get_section(section)
         section_data.update(data)
         with open(self.config_folder / 'config', 'w') as fil:
