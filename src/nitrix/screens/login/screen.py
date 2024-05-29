@@ -66,6 +66,7 @@ class LoginScreen(Screen):
         # Attempt to get the homeserver, username, and password saved
         # in the configuration
         config = NitrixConfig()
+        self.app.config = config
         homeserver.value = config.get_config("Credentials", "homeserver") or ""
         username.value = config.get_config("Credentials", "username") or ""
         password.value = config.get_config("Credentials", "password") or ""
