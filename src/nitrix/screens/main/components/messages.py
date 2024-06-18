@@ -18,34 +18,28 @@ class NewMessagesStart():
 class MessageContent(Vertical):
     
     def __init__(self, message: RoomMessageText, *args, **kwargs):
+        
         self.sender_id = message.sender
         self.sender = message.sender[1:].split(":")[0]
         self.messages = []
-        super().__init__(*args, **kwargs)
         
-        sender_horizonal = Horizontal(classes="sender-container")
-        
-        # Username
-        usercolour = f"username-colour-{get_user_id_colour(self.sender_id)}"
-        sender_name = Label(self.sender, classes=f"sender {usercolour}")
-        
-        # Message sent time
         message_time = message.server_timestamp / 1000
         message_time = datetime.datetime.fromtimestamp(message_time)
         self.message_time = message_time
-        message_time = message_time.strftime("%a %d, %I:%M%p")
-        sender_time = Label(message_time, classes=f"time")
         
-        # Mount the username and message sent time to the horizontal
-        sender_horizonal.mount(sender_name)
-        sender_horizonal.mount(sender_time)
+        super().__init__(*args, **kwargs)
         
-        # Mount the horizontal
-        self.mount(sender_horizonal)
+    def compose(self):
+        # Username
+        usercolour = f"username-colour-{get_user_id_colour(self.sender_id)}"
         
-        # Mount the vertical and add the message
-        self.mount(Vertical(id="messages", classes="message-body"))
-        self.add_message(message)
+        # Message sent time
+        message_time = self.message_time.strftime("%a %d, %I:%M%p")
+        
+        with Horizontal(classes="sender-container"):
+            yield Label(self.sender, classes=f"sender {usercolour}")
+            yield Label(message_time, classes=f"time")
+        yield Vertical(id="messages", classes="message-body")
         
     def add_message(self, message: RoomMessageText):
         """Adds a message to the container
@@ -168,7 +162,8 @@ class MessagesContainer(ContentSwitcher):
                     last_message.add_message(message)
                 else:
                     message_content = MessageContent(message, classes="message-content")
-                    vert_scroll.mount(message_content)
+                    await vert_scroll.mount(message_content)
+                    message_content.add_message(message)
                 
         # Scroll to the end
         # TODO: Make it so we don't scroll when we're actively looking at a room
