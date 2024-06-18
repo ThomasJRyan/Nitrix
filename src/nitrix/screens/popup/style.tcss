@@ -1,0 +1,24 @@
+PopupForm {
+    align: center middle;
+}
+
+#dialog {
+    grid-size: 1;
+    grid-rows: 1fr 3;
+    padding: 0 1;
+    width: 40;
+    height: 15;
+    border: thick $background 80%;
+    background: $surface;
+}
+
+#message {
+    column-span: 1;
+    height: 1fr;
+    width: 1fr;
+    content-align: center middle;
+}
+
+Button {
+    width: 100%;
+}
